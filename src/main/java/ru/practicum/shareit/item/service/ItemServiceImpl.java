@@ -21,8 +21,6 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
 
-
-
     private final UserService userService;
 
     @Override
