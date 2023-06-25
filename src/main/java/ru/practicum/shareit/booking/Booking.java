@@ -29,5 +29,5 @@ public class Booking {
 
     private User booker;
 
-    private boolean status; // изменить
+    private boolean status;
 }
