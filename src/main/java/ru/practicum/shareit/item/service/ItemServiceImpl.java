@@ -2,11 +2,11 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.EntityNotFoundException;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserRepository;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -19,23 +19,24 @@ public class ItemServiceImpl implements ItemService {
 
     private final UserRepository userRepository;
 
+
     @Override
     public Item createItem(Item item, long ownerId) {
-        User owner = userRepository.getUserById(ownerId).orElseThrow(() ->
-                new EntityNotFoundException(String.format("Пользователь %s не найден.", ownerId)));
+        User owner = userRepository.findById(ownerId).orElseThrow(() ->
+                new NotFoundException(String.format("Пользователь %s не найден.", ownerId)));
 
         item.setOwner(owner);
 
-        return itemRepository.createItem(item, ownerId);
+        return itemRepository.save(item);
     }
 
     @Override
     public Item updateItem(Item item, long itemId, long userId) {
-        Item updatedItem = itemRepository.getItemById(itemId).orElseThrow(() ->
-                new EntityNotFoundException(String.format("Предмет не найден: %s", item)));
+        Item updatedItem = itemRepository.findById(itemId).orElseThrow(() ->
+                new NotFoundException(String.format("Предмет не найден: %s", item)));
 
         if (updatedItem.getOwner().getId() != userId) {
-            throw new EntityNotFoundException(
+            throw new NotFoundException(
                     String.format("У пользователя %d нету предмета %s.", userId, item));
         }
 
@@ -49,18 +50,20 @@ public class ItemServiceImpl implements ItemService {
             updatedItem.setAvailable(item.getAvailable());
         }
 
+        itemRepository.save(updatedItem);
+
         return updatedItem;
     }
 
     @Override
     public Item getItemById(long userId, long itemId) {
-        return itemRepository.getItemById(itemId).orElseThrow(() ->
-                new EntityNotFoundException(String.format("Item %s не найден.", itemId)));
+        return itemRepository.findById(itemId).orElseThrow(() ->
+                new NotFoundException(String.format("Item %s не найден.", itemId)));
     }
 
     @Override
     public Collection<Item> getItemsByUserId(long userId) {
-        return itemRepository.getItemsByUserId(userId);
+        return itemRepository.findAllByOwnerId(userId);
     }
 
     @Override
@@ -69,6 +72,6 @@ public class ItemServiceImpl implements ItemService {
             return Collections.emptyList();
         }
 
-        return itemRepository.searchByText(text, userId);
+        return itemRepository.findItemsByText(text);
     }
 }
