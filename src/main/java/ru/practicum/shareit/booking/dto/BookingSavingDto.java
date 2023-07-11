@@ -4,24 +4,28 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+
+import static ru.practicum.shareit.util.Constant.TIME_PATTERN;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingSavingDto {
-
-    long itemId;
-
-    @NotNull
-    @FutureOrPresent
-    LocalDateTime start;
+    private long itemId;
 
     @NotNull
     @FutureOrPresent
-    LocalDateTime end;
+    @DateTimeFormat(pattern = TIME_PATTERN)
+    private LocalDateTime start;
+
+    @NotNull
+    @FutureOrPresent
+    @DateTimeFormat(pattern = TIME_PATTERN)
+    private LocalDateTime end;
 }

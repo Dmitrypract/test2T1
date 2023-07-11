@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.AlreadyExistsException;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -8,22 +9,22 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import org.springframework.transaction.annotation.Transactional;
-import javax.validation.ConstraintViolationException;
 import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class UserServiceImpl implements UserService {
-
     private final UserRepository userRepository;
 
     @Override
     public User save(User user) {
         try {
             return userRepository.save(user);
-        } catch (ConstraintViolationException e) {
-            throw new AlreadyExistsException(String.format("Пользователь с %s уже зарегистрирован.", user.getEmail()));
+        } catch (DataIntegrityViolationException e) {
+            throw new AlreadyExistsException(String.format(
+                    "Пользователь с %s уже зарегистрирован", user.getEmail()
+            ));
         }
     }
 
@@ -41,8 +42,10 @@ public class UserServiceImpl implements UserService {
 
         try {
             return userRepository.save(updatedUser);
-        } catch (ConstraintViolationException e) {
-            throw new AlreadyExistsException(String.format("Пользователь с %s уже зарегистрирован.", user.getEmail()));
+        } catch (DataIntegrityViolationException e) {
+            throw new AlreadyExistsException(String.format(
+                    "Пользователь с %s уже зарегистрирован", updatedUser.getEmail()
+            ));
         }
     }
 

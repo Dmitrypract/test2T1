@@ -22,7 +22,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "join fetch i.owner " +
             "where b.id = :id " +
             "order by b.start desc")
-    @NonNull Optional<Booking> findById(@Param("id") @NonNull Long id);
+    @NonNull Optional<Booking> findById(@Param("id") long id);
 
     @Query("select b " +
             "from Booking b " +
@@ -81,7 +81,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "where i.owner = :user " +
             "   and b.start < :time " +
             "   and b.end > :time ")
-    List<Booking> findByItemOwnerCurrent(@Param("user") User itemOwner, @Param("time") LocalDateTime currentTime, Sort start);
+    List<Booking> findByItemOwnerCurrent(@Param("user") User itemOwner,
+                                         @Param("time") LocalDateTime currentTime, Sort start);
 
     @Query("select b " +
             "from Booking b " +
@@ -89,7 +90,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "join fetch b.item i " +
             "where i.owner = :user " +
             "   and b.end < :time ")
-    List<Booking> findByItemOwnerPast(@Param("user") User itemOwner, @Param("time") LocalDateTime currentTime, Sort start);
+    List<Booking> findByItemOwnerPast(@Param("user") User itemOwner,
+                                      @Param("time") LocalDateTime currentTime, Sort start);
 
     @Query("select b " +
             "from Booking b " +
@@ -97,7 +99,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "join fetch b.item i " +
             "where i.owner = :user " +
             "   and b.start > :time ")
-    List<Booking> findByItemOwnerFuture(@Param("user") User itemOwner, @Param("time") LocalDateTime currentTime, Sort start);
+    List<Booking> findByItemOwnerFuture(@Param("user") User itemOwner,
+                                        @Param("time") LocalDateTime currentTime, Sort start);
 
     @Query("select b " +
             "from Booking b " +
@@ -110,8 +113,17 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("select b " +
             "from Booking b " +
             "join fetch b.item i " +
-            "where i.id = :bookingId " +
-            "   and i.owner.id = :ownerId " +
+            "where i.id = :itemId " +
+            "   and i.owner.id = :ownerId" +
+            "   and b.status = :status " +
             "order by b.start")
-    List<Booking> findBookingsByItemId(long bookingId, long ownerId);
+    List<Booking> findBookingsByItemId(@Param("itemId") long itemId,
+                                       @Param("ownerId") long ownerId, Status status);
+
+    List<Booking> findBookingByItemIdAndStatusNotInAndStartBefore(
+            long itemId, List<Status> statuses, LocalDateTime start);
+
+    List<Booking> findBookingsByItemIdInAndBookerIdAndStatus(List<Long> itemIds, long userId, Status status);
+
+    List<Booking> findBookingsByItemIdIn(List<Long> itemIds);
 }
