@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Profile;
 
 import java.sql.SQLException;
 
-@Configuration
+/*@Configuration
 public class BeanConfig {
     @Bean(initMethod = "start", destroyMethod = "stop")
     @Profile("test")
@@ -15,3 +15,4 @@ public class BeanConfig {
         return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9090");
     }
 }
+*/
