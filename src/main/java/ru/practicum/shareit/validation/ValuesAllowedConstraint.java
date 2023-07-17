@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ValuesAllowedValidator.class)
+@Constraint(validatedBy = ValuesAllowedConstraintValidator.class)
 public @interface ValuesAllowedConstraint {
 
     String message() default "{value.hasWrong}";

@@ -1,9 +1,9 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.aspect.ToLog;
 import ru.practicum.shareit.booking.dto.BookingAllFieldsDto;
 import ru.practicum.shareit.booking.dto.BookingSavingDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 import static ru.practicum.shareit.util.Constant.USER_ID_HEADER;
 
 @Validated
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/bookings")
-@ToLog
 public class BookingController {
     private final BookingService bookingService;
 
@@ -33,6 +33,8 @@ public class BookingController {
                 bookingSavingDto.getEnd(),
                 userId);
 
+        log.info("Получен POST-запрос к эндпоинту: '/bookings' " +
+                "на создание бронирования от пользователя с ID={}", userId);
         return BookingMapper.mapToBookingAllFieldsDto(booking);
     }
 
@@ -47,6 +49,9 @@ public class BookingController {
                                                                                    "rejected"},
                                                                            message = "Unknown state: UNSUPPORTED_STATUS")
                                                                    @RequestParam(defaultValue = "all") String state) {
+
+        log.info("Получен GET-запрос к эндпоинту: '/bookings' на получение " +
+                "списка всех бронирований пользователя с ID={} с параметром STATE={}", userId, state);
         return bookingService.findByUserId(userId, state)
                 .stream()
                 .map(BookingMapper::mapToBookingAllFieldsDto)
@@ -58,6 +63,7 @@ public class BookingController {
                                                      @RequestParam(required = false) Boolean approved,
                                                      @RequestHeader(USER_ID_HEADER) long userId) {
         Booking booking = bookingService.updateAvailableStatus(bookingId, approved, userId);
+        log.info("Получен PATCH-запрос к эндпоинту: '/bookings' на обновление статуса бронирования с ID={}", bookingId);
         return BookingMapper.mapToBookingAllFieldsDto(booking);
     }
 
@@ -65,7 +71,7 @@ public class BookingController {
     public BookingAllFieldsDto findBookingByUserOwner(@PathVariable long bookingId,
                                                       @RequestHeader(value = USER_ID_HEADER) long userId) {
         Booking booking = bookingService.findAllBookingsByUserId(bookingId, userId);
-
+        log.info("Получен GET-запрос к эндпоинту: '/bookings' на получение бронирования с ID={}", bookingId);
         return BookingMapper.mapToBookingAllFieldsDto(booking);
     }
 
@@ -80,6 +86,9 @@ public class BookingController {
                                                                              "rejected"},
                                                                      message = "Unknown state: UNSUPPORTED_STATUS")
                                                              @RequestParam(defaultValue = "all") String state) {
+
+        log.info("Получен GET-запрос к эндпоинту: '/bookings/owner' на получение " +
+                "списка всех бронирований вещей пользователя с ID={} с параметром STATE={}", userId, state);
         return bookingService.findOwnerBookings(userId, state)
                 .stream()
                 .map(BookingMapper::mapToBookingAllFieldsDto)

@@ -9,7 +9,7 @@ import ru.practicum.shareit.user.dto.GetBookingUserDto;
 
 @UtilityClass
 public class BookingMapper {
-    public static BookingAllFieldsDto mapToBookingAllFieldsDto(Booking booking) {
+    public BookingAllFieldsDto mapToBookingAllFieldsDto(Booking booking) {
         return BookingAllFieldsDto.builder()
                 .id(booking.getId())
                 .start(booking.getStart())
@@ -20,7 +20,7 @@ public class BookingMapper {
                 .build();
     }
 
-    public static BookingDto mapFromBookingToBookingDto(Booking booking) {
+    public BookingDto mapFromBookingToBookingDto(Booking booking) {
         return BookingDto.builder()
                 .id(booking.getId())
                 .bookerId(booking.getBooker().getId())
