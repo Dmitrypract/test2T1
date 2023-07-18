@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.validation.Create;
-import ru.practicum.shareit.validation.Update;
+import ru.practicum.shareit.marker.Create;
+import ru.practicum.shareit.marker.Update;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -15,13 +15,12 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-
     private long id;
 
     @NotBlank(groups = {Create.class})
     private String name;
 
     @NotBlank(groups = {Create.class})
-    @Email(groups = {Create.class, Update.class})
+    @Email(groups = {Create.class, Update.class}, regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
     private String email;
 }
