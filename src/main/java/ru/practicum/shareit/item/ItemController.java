@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
@@ -24,6 +25,7 @@ import static ru.practicum.shareit.util.Constant.*;
 @RequestMapping("/items")
 @RequiredArgsConstructor
 @Validated
+@Slf4j
 public class ItemController {
     private final ItemService itemService;
 
@@ -31,6 +33,7 @@ public class ItemController {
     public ItemDto saveItem(@Validated(Create.class) @RequestBody ItemDto itemDto,
                             @RequestHeader(USER_ID_HEADER) long userId) {
         Item item = itemService.save(itemDto, userId);
+        log.info("Получен POST-запрос к эндпоинту: '/items' на добавление вещи владельцем с ID={}", userId);
         return ItemMapper.mapToItemDto(item);
     }
 
@@ -39,12 +42,14 @@ public class ItemController {
                               @RequestHeader(USER_ID_HEADER) long userId,
                               @PathVariable long itemId) {
         Item item = itemService.update(ItemMapper.mapToItem(itemDto), itemId, userId);
+        log.info("Получен PATCH-запрос к эндпоинту: '/items' на обновление вещи с ID={}", itemId);
         return ItemMapper.mapToItemDto(item);
     }
 
     @GetMapping("/{itemId}")
     public ItemAllFieldsDto findItemById(@RequestHeader(USER_ID_HEADER) long userId,
                                          @PathVariable long itemId) {
+        log.info("Получен GET-запрос к эндпоинту: '/items' на получение вещи с ID={}", itemId);
         return itemService.findById(userId, itemId);
     }
 
@@ -53,6 +58,7 @@ public class ItemController {
                                                           @RequestParam(defaultValue = PAGE_DEFAULT_FROM) @PositiveOrZero Short from,
                                                           @RequestParam(defaultValue = PAGE_DEFAULT_SIZE) @PositiveOrZero Short size) {
         Pageable page = PageRequest.of(from / size, size);
+        log.info("Получен GET-запрос к эндпоинту: '/items' на получение всех вещей владельца с ID={}", userId);
         return itemService.findItemsByUserId(userId, page);
     }
 
@@ -62,12 +68,15 @@ public class ItemController {
                                                      @RequestParam(defaultValue = PAGE_DEFAULT_FROM) @PositiveOrZero Short from,
                                                      @RequestParam(defaultValue = PAGE_DEFAULT_SIZE) @PositiveOrZero Short size) {
         Pageable page = PageRequest.of(from / size, size);
+        log.info("Получен GET-запрос к эндпоинту: '/items/search' на поиск вещи с текстом={}", text);
         return itemService.searchByText(text, userId, page);
     }
 
     @PostMapping("/{itemId}/comment")
     public CommentResponseDto saveComment(@PathVariable long itemId, @RequestHeader(USER_ID_HEADER) long userId,
                                           @RequestBody CommentRequestDto commentRequestDto) {
+        log.info("Получен POST-запрос к эндпоинту: '/items/comment' на" +
+                " добавление отзыва пользователем с ID={}", userId);
         return itemService.saveComment(itemId, userId, commentRequestDto.getText());
     }
 }
