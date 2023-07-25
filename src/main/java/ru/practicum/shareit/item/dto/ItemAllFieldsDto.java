@@ -18,5 +18,5 @@ public class ItemAllFieldsDto {
     private long itemRequest;
     private BookingDto lastBooking;
     private BookingDto nextBooking;
-    Collection<CommentResponseDto> comments;
+    private Collection<CommentResponseDto> comments;
 }
