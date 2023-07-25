@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
 import static ru.practicum.shareit.util.Constant.*;
 
 @Validated
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/bookings")
-@Slf4j
 public class BookingController {
     private final BookingService bookingService;
 
