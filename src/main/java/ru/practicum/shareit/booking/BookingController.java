@@ -2,19 +2,22 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingAllFieldsDto;
 import ru.practicum.shareit.booking.dto.BookingSavingDto;
-import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.validation.ValuesAllowedConstraint;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.util.Constant.USER_ID_HEADER;
+import static ru.practicum.shareit.util.Constant.*;
 
 @Validated
 @Slf4j
@@ -35,6 +38,7 @@ public class BookingController {
 
         log.info("Получен POST-запрос к эндпоинту: '/bookings' " +
                 "на создание бронирования от пользователя с ID={}", userId);
+
         return BookingMapper.mapToBookingAllFieldsDto(booking);
     }
 
@@ -48,11 +52,14 @@ public class BookingController {
                                                                                    "waiting",
                                                                                    "rejected"},
                                                                            message = "Unknown state: UNSUPPORTED_STATUS")
-                                                                   @RequestParam(defaultValue = "all") String state) {
-
+                                                                   @RequestParam(defaultValue = "all") String state,
+                                                                   @RequestParam(defaultValue = PAGE_DEFAULT_FROM) @PositiveOrZero Short from,
+                                                                   @RequestParam(defaultValue = PAGE_DEFAULT_SIZE) @Positive Short size) {
+        Pageable page = PageRequest.of(from / size, size, SORT_BY_START_DATE_DESC);
         log.info("Получен GET-запрос к эндпоинту: '/bookings' на получение " +
                 "списка всех бронирований пользователя с ID={} с параметром STATE={}", userId, state);
-        return bookingService.findByUserId(userId, state)
+
+        return bookingService.findByUserId(userId, state, page)
                 .stream()
                 .map(BookingMapper::mapToBookingAllFieldsDto)
                 .collect(Collectors.toList());
@@ -64,6 +71,7 @@ public class BookingController {
                                                      @RequestHeader(USER_ID_HEADER) long userId) {
         Booking booking = bookingService.updateAvailableStatus(bookingId, approved, userId);
         log.info("Получен PATCH-запрос к эндпоинту: '/bookings' на обновление статуса бронирования с ID={}", bookingId);
+
         return BookingMapper.mapToBookingAllFieldsDto(booking);
     }
 
@@ -71,6 +79,7 @@ public class BookingController {
     public BookingAllFieldsDto findBookingByUserOwner(@PathVariable long bookingId,
                                                       @RequestHeader(value = USER_ID_HEADER) long userId) {
         Booking booking = bookingService.findAllBookingsByUserId(bookingId, userId);
+
         log.info("Получен GET-запрос к эндпоинту: '/bookings' на получение бронирования с ID={}", bookingId);
         return BookingMapper.mapToBookingAllFieldsDto(booking);
     }
@@ -85,11 +94,15 @@ public class BookingController {
                                                                              "waiting",
                                                                              "rejected"},
                                                                      message = "Unknown state: UNSUPPORTED_STATUS")
-                                                             @RequestParam(defaultValue = "all") String state) {
+                                                             @RequestParam(defaultValue = "all") String state,
+                                                             @RequestParam(defaultValue = PAGE_DEFAULT_FROM) @PositiveOrZero Short from,
+                                                             @RequestParam(defaultValue = PAGE_DEFAULT_SIZE) @Positive Short size) {
+
+        Pageable page = PageRequest.of(from / size, size, SORT_BY_START_DATE_DESC);
 
         log.info("Получен GET-запрос к эндпоинту: '/bookings/owner' на получение " +
                 "списка всех бронирований вещей пользователя с ID={} с параметром STATE={}", userId, state);
-        return bookingService.findOwnerBookings(userId, state)
+        return bookingService.findOwnerBookings(userId, state, page)
                 .stream()
                 .map(BookingMapper::mapToBookingAllFieldsDto)
                 .collect(Collectors.toList());
