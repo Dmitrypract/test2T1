@@ -24,7 +24,7 @@ public class ItemClient extends BaseClient {
                         .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
                         .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                         .build()
-        );
+         );
     }
 
     public ResponseEntity<Object> saveItem(ItemDto itemDto, long userId) {
