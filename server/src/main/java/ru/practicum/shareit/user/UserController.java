@@ -2,7 +2,6 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.aspect.ToLog;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -12,7 +11,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
-@ToLog
 public class UserController {
     private final UserService userService;
 
