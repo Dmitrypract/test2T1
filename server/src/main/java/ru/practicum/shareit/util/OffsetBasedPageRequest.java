@@ -6,7 +6,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
 import java.io.Serializable;
 
 public class OffsetBasedPageRequest implements Pageable, Serializable {
@@ -83,6 +82,7 @@ public class OffsetBasedPageRequest implements Pageable, Serializable {
     }
 
     @Override
+
     public Pageable withPage(int pageNumber) {
         return null;
     }
