@@ -31,7 +31,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler({ValidationException.class,
-            NotAvailableException.class, MethodArgumentNotValidException.class})
+             MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleBadRequest(final RuntimeException e) {
         log.debug("Получен статус 400 Bad request {}", e.getMessage(), e);
