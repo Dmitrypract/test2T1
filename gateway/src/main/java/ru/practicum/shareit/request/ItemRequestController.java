@@ -4,6 +4,7 @@ package ru.practicum.shareit.request;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.aspect.ToLog;
 import ru.practicum.shareit.request.dto.ItemRequestRequestDto;
 
 import javax.validation.Valid;
@@ -16,6 +17,7 @@ import static ru.practicum.shareit.util.Constant.*;
 @RequestMapping(path = "/requests")
 @RequiredArgsConstructor
 @Validated
+@ToLog
 public class ItemRequestController {
     private final ItemRequestClient itemRequestClient;
 

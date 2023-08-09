@@ -4,6 +4,7 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.aspect.ToLog;
 import ru.practicum.shareit.booking.dto.BookingSavingDto;
 import ru.practicum.shareit.validation.ValuesAllowedConstraint;
 
@@ -17,6 +18,7 @@ import static ru.practicum.shareit.util.Constant.*;
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
 @Validated
+@ToLog
 public class BookingController {
     private final BookingClient bookingClient;
 

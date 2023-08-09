@@ -4,6 +4,7 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.aspect.ToLog;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.validation.Create;
 import ru.practicum.shareit.validation.Update;
@@ -12,6 +13,7 @@ import ru.practicum.shareit.validation.Update;
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
 @Validated
+@ToLog
 public class UserController {
     private final UserClient userClient;
 
