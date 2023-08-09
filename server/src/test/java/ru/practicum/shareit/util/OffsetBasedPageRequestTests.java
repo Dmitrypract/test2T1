@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 import static org.junit.jupiter.api.Assertions.*;
 import static ru.practicum.shareit.util.Constant.SORT_BY_ID_ASC;
 
-class OffsetBasedPageRequestTest {
+class OffsetBasedPageRequestTests {
 
     @BeforeAll
     static void beforeAll() {
