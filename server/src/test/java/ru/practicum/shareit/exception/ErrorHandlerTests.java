@@ -38,6 +38,14 @@ class ErrorHandlerTests {
     }
 
     @Test
+    void testHandleNotAvailable() {
+        NotAvailableException notAvailableException = new NotAvailableException("Bad request");
+        Map<String, String> result = errorHandler.handleBadRequest(notAvailableException);
+        assertEquals(HttpStatus.BAD_REQUEST.toString(), result.get("status"));
+        assertEquals("Bad request", result.get("message"));
+    }
+
+    @Test
     void testHandleRaw() {
         Throwable throwable = new Throwable("Internal server error");
         Map<String, String> result = errorHandler.handleRaw(throwable);
