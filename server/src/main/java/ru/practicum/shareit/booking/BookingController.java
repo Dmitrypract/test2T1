@@ -9,7 +9,6 @@ import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.util.OffsetBasedPageRequest;
 import java.util.Collection;
 import java.util.stream.Collectors;
-
 import static ru.practicum.shareit.util.Constant.*;
 
 @RestController
