@@ -1,49 +1,46 @@
 package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.service.UserService;
-
-import java.util.Collection;
-import java.util.stream.Collectors;
+import ru.practicum.shareit.validation.Create;
+import ru.practicum.shareit.validation.Update;
 
 @RestController
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
+@Validated
 public class UserController {
-    private final UserService userService;
+    private final UserClient userClient;
 
     @PostMapping
-    public UserDto saveUser(@RequestBody UserDto userDto) {
-        User user = userService.save(UserMapper.INSTANCE.mapToUser(userDto));
-        return UserMapper.INSTANCE.mapToUserDto(user);
+    public Object saveUser(@Validated(Create.class) @RequestBody UserDto userDto) {
+        return userClient.saveUser(userDto);
     }
 
     @PatchMapping("/{userId}")
-    public UserDto updateUser(@RequestBody UserDto userDto, @PathVariable long userId) {
-        User user = userService.update(UserMapper.INSTANCE.mapToUser(userDto), userId);
-        return UserMapper.INSTANCE.mapToUserDto(user);
+    public Object updateUser(@Validated(Update.class) @RequestBody UserDto userDto, @PathVariable long userId) {
+        return userClient.updateUser(userDto, userId);
     }
 
     @GetMapping("/{id}")
-    public UserDto findUserById(@PathVariable long id) {
-        User user = userService.findById(id);
-        return UserMapper.INSTANCE.mapToUserDto(user);
+    public Object findUserById(@PathVariable long id) {
+        return userClient.findUserById(id);
     }
 
     @GetMapping
-    public Collection<UserDto> findAllUsers() {
-        return userService
-                .findAll()
-                .stream()
-                .map(UserMapper.INSTANCE::mapToUserDto)
-                .collect(Collectors.toList());
+    public Object findAllUsers() {
+        return userClient.findAllUsers();
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUserById(@PathVariable long id) {
-        userService.deleteById(id);
+    public Object deleteUserById(@PathVariable long id) {
+        try {
+            userClient.deleteUserById(id);
+            return "User deleted successfully";
+        } catch (Exception e) {
+            return "Error deleting user";
+        }
     }
 }
-

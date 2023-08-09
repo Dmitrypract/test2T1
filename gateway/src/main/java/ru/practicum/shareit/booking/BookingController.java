@@ -1,72 +1,70 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingAllFieldsDto;
 import ru.practicum.shareit.booking.dto.BookingSavingDto;
-import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.util.OffsetBasedPageRequest;
-import java.util.Collection;
-import java.util.stream.Collectors;
+import ru.practicum.shareit.validation.ValuesAllowedConstraint;
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import static ru.practicum.shareit.util.Constant.*;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping(path = "/bookings")
+@RequiredArgsConstructor
+@Validated
 public class BookingController {
-    private final BookingService bookingService;
+    private final BookingClient bookingClient;
 
     @PostMapping
-    public BookingAllFieldsDto saveBooking(@RequestBody BookingSavingDto bookingSavingDto,
-                                           @RequestHeader(USER_ID_HEADER) long userId) {
-        Booking booking = bookingService.save(
-                bookingSavingDto.getItemId(),
-                bookingSavingDto.getStart(),
-                bookingSavingDto.getEnd(),
-                userId);
-
-        return BookingMapper.INSTANCE.mapToBookingAllFieldsDto(booking);
+    public Object saveBooking(@Valid @RequestBody BookingSavingDto bookingSavingDto,
+                              @RequestHeader(USER_ID_HEADER) long userId) {
+        return bookingClient.saveBooking(bookingSavingDto, userId);
     }
 
     @GetMapping
-    public Collection<BookingAllFieldsDto> findAllBookingsByUserId(@RequestHeader(USER_ID_HEADER) long userId,
-                                                                   @RequestParam(defaultValue = "all") String state,
-                                                                   @RequestParam(defaultValue = PAGE_DEFAULT_FROM) Short from,
-                                                                   @RequestParam(defaultValue = PAGE_DEFAULT_SIZE) Short size) {
-        Pageable page = new OffsetBasedPageRequest(from, size, SORT_BY_START_DATE_DESC);
-        return bookingService.findByUserId(userId, state, page)
-                .stream()
-                .map(BookingMapper.INSTANCE::mapToBookingAllFieldsDto)
-                .collect(Collectors.toList());
+    public Object findAllBookingsByUserId(@RequestHeader(USER_ID_HEADER) long userId,
+                                          @ValuesAllowedConstraint(propName = "state",
+                                                  values = {"all",
+                                                          "current",
+                                                          "past",
+                                                          "future",
+                                                          "waiting",
+                                                          "rejected"},
+                                                  message = "Unknown state: UNSUPPORTED_STATUS")
+                                          @RequestParam(defaultValue = "all") String state,
+                                          @RequestParam(defaultValue = PAGE_DEFAULT_FROM) @PositiveOrZero Short from,
+                                          @RequestParam(defaultValue = PAGE_DEFAULT_SIZE) @Positive Short size) {
+        return bookingClient.findAllBookingsByUserId(userId, state, from, size);
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingAllFieldsDto updateAvailableStatus(@PathVariable long bookingId,
-                                                     @RequestParam(required = false) Boolean approved,
-                                                     @RequestHeader(USER_ID_HEADER) long userId) {
-        Booking booking = bookingService.updateAvailableStatus(bookingId, approved, userId);
-        return BookingMapper.INSTANCE.mapToBookingAllFieldsDto(booking);
+    public Object updateAvailableStatus(@PathVariable long bookingId,
+                                        @RequestParam(required = false) Boolean approved,
+                                        @RequestHeader(USER_ID_HEADER) long userId) {
+        return bookingClient.updateAvailableStatus(bookingId, approved, userId);
     }
 
     @GetMapping("/{bookingId}")
-    public BookingAllFieldsDto findBookingByUserOwner(@PathVariable long bookingId,
-                                                      @RequestHeader(value = USER_ID_HEADER) long userId) {
-        Booking booking = bookingService.findAllBookingsByUserId(bookingId, userId);
-
-        return BookingMapper.INSTANCE.mapToBookingAllFieldsDto(booking);
+    public Object findBookingByUserOwner(@PathVariable long bookingId,
+                                         @RequestHeader(value = USER_ID_HEADER) long userId) {
+        return bookingClient.findBookingByUserOwner(bookingId, userId);
     }
 
     @GetMapping("/owner")
-    public Collection<BookingAllFieldsDto> findOwnerBookings(@RequestHeader(USER_ID_HEADER) long userId,
-                                                             @RequestParam(defaultValue = "all") String state,
-                                                             @RequestParam(defaultValue = PAGE_DEFAULT_FROM) Short from,
-                                                             @RequestParam(defaultValue = PAGE_DEFAULT_SIZE) Short size) {
-
-        Pageable page = new OffsetBasedPageRequest(from, size, SORT_BY_START_DATE_DESC);
-        return bookingService.findOwnerBookings(userId, state, page)
-                .stream()
-                .map(BookingMapper.INSTANCE::mapToBookingAllFieldsDto)
-                .collect(Collectors.toList());
+    public Object findOwnerBookings(@RequestHeader(USER_ID_HEADER) long userId,
+                                    @ValuesAllowedConstraint(propName = "state",
+                                            values = {"all",
+                                                    "current",
+                                                    "past",
+                                                    "future",
+                                                    "waiting",
+                                                    "rejected"},
+                                            message = "Unknown state: UNSUPPORTED_STATUS")
+                                    @RequestParam(defaultValue = "all") String state,
+                                    @RequestParam(defaultValue = PAGE_DEFAULT_FROM) @PositiveOrZero Short from,
+                                    @RequestParam(defaultValue = PAGE_DEFAULT_SIZE) @Positive Short size) {
+        return bookingClient.findOwnerBookings(userId, state, from, size);
     }
 }
