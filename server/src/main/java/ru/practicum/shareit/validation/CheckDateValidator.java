@@ -8,9 +8,7 @@ import java.time.LocalDateTime;
 
 public class CheckDateValidator implements ConstraintValidator<StartBeforeEndDateValid, BookingSavingDto> {
 
-    @Override
-    public void initialize(StartBeforeEndDateValid constraintAnnotation) {
-    }
+
 
     @Override
     public boolean isValid(BookingSavingDto bookingSavingDto, ConstraintValidatorContext constraintValidatorContext) {
