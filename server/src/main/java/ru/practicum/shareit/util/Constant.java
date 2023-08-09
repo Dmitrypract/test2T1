@@ -15,7 +15,6 @@ public class Constant {
     public static final String PAGE_DEFAULT_FROM = "0";
     public static final String PAGE_DEFAULT_SIZE = "32";
 
-    public static final Sort SORT_BY_ID_ASC = Sort.by(Sort.Direction.ASC, "id");
     public static final Comparator<Booking> orderByStartDateAsc = (a, b) -> {
         if (a.getStart().isAfter(b.getStart())) {
             return 1;
