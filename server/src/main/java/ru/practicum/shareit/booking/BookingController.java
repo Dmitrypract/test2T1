@@ -7,7 +7,6 @@ import ru.practicum.shareit.booking.dto.BookingAllFieldsDto;
 import ru.practicum.shareit.booking.dto.BookingSavingDto;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.util.OffsetBasedPageRequest;
-
 import java.util.Collection;
 import java.util.stream.Collectors;
 
