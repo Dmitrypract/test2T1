@@ -1,45 +1,47 @@
 package ru.practicum.shareit.request;
 
-
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestRequestDto;
+import ru.practicum.shareit.request.dto.ItemRequestResponseDto;
+import ru.practicum.shareit.request.service.ItemRequestService;
+import ru.practicum.shareit.util.OffsetBasedPageRequest;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
+import java.util.Collection;
 
 import static ru.practicum.shareit.util.Constant.*;
 
 @RestController
 @RequestMapping(path = "/requests")
 @RequiredArgsConstructor
-@Validated
 public class ItemRequestController {
-    private final ItemRequestClient itemRequestClient;
+    private final ItemRequestService itemRequestService;
 
     @PostMapping
-    public Object saveItemRequest(@Valid @RequestBody ItemRequestRequestDto dto,
-                                  @RequestHeader(USER_ID_HEADER) long userId) {
-        return itemRequestClient.saveItemRequest(dto, userId);
+    public ItemRequest saveItemRequest(@RequestBody ItemRequestRequestDto dto,
+                                       @RequestHeader(USER_ID_HEADER) long userId) {
+        return itemRequestService.saveItemRequest(dto.getDescription(), userId);
     }
 
     @GetMapping
-    public Object findOwnItemRequests(@RequestHeader(USER_ID_HEADER) long userId) {
-        return itemRequestClient.findOwnItemRequests(userId);
+    public Collection<ItemRequestResponseDto> findOwnItemRequests(@RequestHeader(USER_ID_HEADER) long userId) {
+        return itemRequestService.findOwnItemRequests(userId);
     }
 
     @GetMapping("/all")
-    public Object findAllItemRequests(@RequestHeader(USER_ID_HEADER) long userId,
-                                      @RequestParam(defaultValue = PAGE_DEFAULT_FROM) @PositiveOrZero Short from,
-                                      @RequestParam(defaultValue = PAGE_DEFAULT_SIZE) @Positive Short size) {
-        return itemRequestClient.findAllItemRequests(userId, from, size);
+    public Collection<ItemRequestResponseDto> findAllItemRequests(@RequestHeader(USER_ID_HEADER) long userId,
+                                                                  @RequestParam(defaultValue = PAGE_DEFAULT_FROM) Short from,
+                                                                  @RequestParam(defaultValue = PAGE_DEFAULT_SIZE) Short size) {
+
+        Pageable page = new OffsetBasedPageRequest(from, size, Sort.by("created").descending());
+        return itemRequestService.findAllItemRequests(userId, page);
     }
 
     @GetMapping("/{requestId}")
-    public Object findItemRequestById(@RequestHeader(USER_ID_HEADER) long userId,
-                                      @PathVariable long requestId) {
-        return itemRequestClient.findItemRequestsById(userId, requestId);
+    public ItemRequestResponseDto findItemRequestById(@RequestHeader(USER_ID_HEADER) long userId,
+                                                      @PathVariable long requestId) {
+        return itemRequestService.findItemRequestsById(userId, requestId);
     }
 }
