@@ -1,7 +1,7 @@
-package consulting.counting.controller;
+package count.controller;
 
-import consulting.counting.exception.InvalidTextException;
-import consulting.counting.service.Calculator;
+import count.exception.InvalidTextException;
+import count.service.Calculator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +15,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/calculate")
-public class Controller {
+public class  CountController {
     private final Calculator calculator;
 
     @GetMapping()

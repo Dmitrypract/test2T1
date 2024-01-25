@@ -1,4 +1,4 @@
-package consulting.counting.service;
+package count.service;
 
 import java.util.Map;
 

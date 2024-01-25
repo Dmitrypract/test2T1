@@ -1,7 +1,7 @@
-package consulting.counting;
+package count;
 
-import consulting.counting.controller.Controller;
-import consulting.counting.exception.InvalidTextException;
+import count.controller.CountController;
+import count.exception.InvalidTextException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +13,11 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(classes = CountingApplication.class)
+@SpringBootTest(classes = CountApplication.class)
 class Tests {
 
     @Autowired
-    private Controller controller;
+    private CountController controller;
 
 
     @Test

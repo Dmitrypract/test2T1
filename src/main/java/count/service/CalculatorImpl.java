@@ -1,4 +1,4 @@
-package consulting.counting.service;
+package count.service;
 
 import org.springframework.stereotype.Service;
 

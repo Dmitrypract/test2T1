@@ -1,4 +1,4 @@
-package consulting.counting.exception;
+package count.exception;
 
 import lombok.Getter;
 
