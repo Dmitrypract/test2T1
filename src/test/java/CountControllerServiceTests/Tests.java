@@ -1,5 +1,6 @@
-package count;
+package CountControllerServiceTests;
 
+import count.CountApplication;
 import count.controller.CountController;
 import count.exception.InvalidTextException;
 import org.junit.jupiter.api.DisplayName;
